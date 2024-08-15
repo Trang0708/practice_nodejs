@@ -1,0 +1,24 @@
+{
+  "name": "nodejs_practice",
+  "version": "1.0.0",
+  "description": "This is for practicing nodejs",
+  "main": "index.js",
+  "scripts": {
+    "start":"nodemon --inspect index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "nodejs",
+    "practice",
+    "nodejs",
+    "practice"
+  ],
+  "author": "trang0708",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}
