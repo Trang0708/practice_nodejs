@@ -10,17 +10,22 @@ const expHandelbars = require('express-handlebars')
 // })
 
 //Template engine
-app.engine('handlebars',expHandelbars.engine())
-app.set('view engine', 'handlebars')
+app.engine('hbs',expHandelbars.engine({
+  extname: 'hbs'
+}))
+app.set('view engine', 'hbs')
 app.set('views', path.join(__dirname, 'resources/views'));
 
-app.get('/',homeRenders)
+app.get('/',pageRender('home'))
+app.get('/news',pageRender('news'))
 
-//seperated functions
-//render home handlebars
-function homeRenders (req,res,next){
-    console.log(`Rendering home.handlebars`)
-    return res.render('home')
+//render pages
+function pageRender (page){
+    console.log(`Rendering: `+ page)
+    let renderPage = (req,res) => {
+      res.render(page)
+    }
+    return renderPage
 }
 
 
