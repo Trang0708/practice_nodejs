@@ -2,9 +2,9 @@
   "name": "nodejs_practice",
   "version": "1.0.0",
   "description": "This is for practicing nodejs",
-  "main": "index.js",
+  "main": "src/app.js",
   "scripts": {
-    "start":"nodemon --inspect index.js",
+    "start": "nodemon --inspect src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -16,7 +16,8 @@
   "author": "trang0708",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "express-handlebars": "^8.0.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.4"
