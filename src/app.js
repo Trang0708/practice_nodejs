@@ -2,12 +2,10 @@ const express = require('express')
 const path = require('path')
 const app = express()
 const port = 3000
-
 const expHandelbars = require('express-handlebars')
 
-// app.get('/', (req, res) => {
-//   res.send('Hello World!')
-// })
+//import img files
+app.use(express.static(path.join(__dirname,'/public')))
 
 //Template engine
 app.engine('hbs',expHandelbars.engine({
@@ -17,7 +15,7 @@ app.set('view engine', 'hbs')
 app.set('views', path.join(__dirname, 'resources/views'));
 
 app.get('/',pageRender('home'))
-app.get('/news',pageRender('news'))
+app.get('/about',pageRender('about'))
 
 //render pages
 function pageRender (page){
