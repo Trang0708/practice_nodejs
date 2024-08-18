@@ -4,7 +4,7 @@ const app = express()
 const port = 3000
 const expHandelbars = require('express-handlebars')
 
-//import img files
+//import static files or folders
 app.use(express.static(path.join(__dirname,'/public')))
 
 //Template engine
