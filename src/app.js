@@ -1,21 +1,23 @@
-const express = require('express')
-const path = require('path')
+import express from 'express'
 const app = express()
 const port = 3000
-const expHandelbars = require('express-handlebars')
+import expHandelbars from 'express-handlebars'
+
+import {UserRouters} from './Routes/index.js'
 
 //import static files or folders
-app.use(express.static(path.join(__dirname,'/public')))
+app.use(express.static("./src/public"))
 
 //Template engine
 app.engine('hbs',expHandelbars.engine({
   extname: 'hbs'
 }))
 app.set('view engine', 'hbs')
-app.set('views', path.join(__dirname, 'resources/views'));
+app.set('views', './src/resources/views');
 
 app.get('/',pageRender('home'))
 app.get('/about',pageRender('about'))
+app.use('/users',UserRouters)
 
 //render pages
 function pageRender (page){
