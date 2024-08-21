@@ -8,7 +8,7 @@
     "watch": "node-sass --watch src/resources/scss/ --output src/public/css/ --no-source-map",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "type":"module",
+  "type": "module",
   "keywords": [
     "nodejs",
     "practice",
@@ -18,8 +18,10 @@
   "author": "trang0708",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "express-handlebars": "^8.0.1"
+    "express-handlebars": "^8.0.1",
+    "express-validator": "^7.2.0"
   },
   "devDependencies": {
     "node-sass": "^9.0.0",
