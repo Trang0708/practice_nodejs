@@ -2,7 +2,10 @@
 import express from 'express'
 import expHandelbars from 'express-handlebars'
 //import router
-import {UserRouters} from './Routes/index.js'
+import {
+  UserRouters,
+  ProductRouters
+} from './Routes/index.js'
 //enviroment config
 import * as dotenv from 'dotenv'
 dotenv.config()
@@ -27,6 +30,7 @@ app.use(express.json())
 app.get('/',pageRender('home'))
 app.get('/about',pageRender('about'))
 app.use('/users',UserRouters)
+app.use('/products',ProductRouters)
 
 /*FUNCTIONS*/
 //render pages
