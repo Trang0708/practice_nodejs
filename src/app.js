@@ -9,6 +9,8 @@ import {
 //enviroment config
 import * as dotenv from 'dotenv'
 dotenv.config()
+//import database connection
+import connect from './Database/database.js'
 
 
 const app = express()
@@ -43,6 +45,7 @@ function pageRender (page){
 }
 
 
-app.listen(PORT, () => {
+app.listen(PORT, async() => {
+  await connect()
   console.log(`Example app listening on port ${PORT}`)
 })
