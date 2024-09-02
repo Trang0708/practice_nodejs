@@ -10,7 +10,8 @@ const getProducts = async ({
 const insertProduct = async ({
     name,
     price,
-    mfg
+    mfg,
+    category
 }) => {
     console.log('new product was added')
 }

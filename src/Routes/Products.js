@@ -15,7 +15,7 @@ router.get('/:id', ProductController.getProductByID)
 router.patch('/',ProductController.updateProduct)
 
 //insert new product
-router.post('/',ProductController.insertProduct)
+router.post('/insert',ProductController.insertProduct)
 
 //delete product
 router.delete('/',ProductController.deleteProduct)

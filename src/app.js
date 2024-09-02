@@ -4,7 +4,8 @@ import expHandelbars from 'express-handlebars'
 //import router
 import {
   UserRouters,
-  ProductRouters
+  ProductRouters,
+  CategoryRouters
 } from './Routes/index.js'
 //enviroment config
 import * as dotenv from 'dotenv'
@@ -33,6 +34,8 @@ app.get('/',pageRender('home'))
 app.get('/about',pageRender('about'))
 app.use('/users',UserRouters)
 app.use('/products',ProductRouters)
+app.use('/categories',CategoryRouters)
+
 
 /*FUNCTIONS*/
 //render pages

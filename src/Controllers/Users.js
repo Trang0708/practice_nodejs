@@ -1,34 +1,39 @@
 /*IMPORT LIBRARY AND MIDDELWARE*/
 import {validationResult} from 'express-validator'
+//import http status code
+import httpStatusCode from '../Exceptions/HttpStatusCode.js'
 //import repository
 import { UserRepository } from '../Repositories/index.js'
 
 //get all users
 const getUser = async (req,res) => {
     try {
-        res.status(200).json({
+        res.status(httpStatusCode.OK).json({
             message: 'Successfully get all users',
             data:
             [
                 {
                     name: 'user1',
                     email: 'user1@email.com',
-                    password: 'user1abcd'
+                    password: 'user1abcd',
+                    role: 'admin'
                 },
                 {
                     name: 'user2',
                     email: 'user2@email.com',
-                    password: 'user2abcd'
+                    password: 'user2abcd',
+                    role: 'general'
                 },
                 {
                     name: 'user3',
                     email: 'user3@email.com',
-                    password: 'user3abcd'
+                    password: 'user3abcd',
+                    role: 'general'
                 }
             ]
         })
-    } catch {
-        res.status(500).json({
+    } catch (e){
+        res.status(httpStatusCode.INTERNAL_SERVER_ERROR).json({
             message: 'Unable to get user data'
         })
     }
@@ -47,12 +52,12 @@ const login = async (req,res) => {
     const {email,password} = req.body
     if (errors.isEmpty()){
         await UserRepository.login({email,password})
-        res.status(200).json({
+        res.status(httpStatusCode.OK).json({
             message: 'User ' + req.body.username + ' login successfully',
             data: 'detail user here'
         })
     } else {
-        return res.status(400).json({errors: errors.array()})
+        return res.status(httpStatusCode.NOT_FOUND).json({errors: errors.array()})
     }
 }
 
@@ -65,20 +70,22 @@ const signup = async (req,res) => {
         username,
         email,
         password,
-        phoneNumber
+        phoneNumber,
+        role
     } = req.body 
     if (errors.isEmpty()){
         await UserRepository.signup({
             username,
             email,
             password,
-            phoneNumber
+            phoneNumber,
+            role
         })
-        res.status(200).json({
+        res.status(httpStatusCode.OK).json({
             message: 'New user was created successfully'
         })
     } else {
-        return res.status(400).json({errors: errors.array()})
+        return res.status(httpStatusCode.NOT_FOUND).json({errors: errors.array()})
     }
 }
 
