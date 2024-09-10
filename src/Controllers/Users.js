@@ -1,5 +1,5 @@
 /*IMPORT LIBRARY AND MIDDELWARE*/
-import {validationResult} from 'express-validator'
+import {body, validationResult} from 'express-validator'
 //import http status code
 import httpStatusCode from '../Exceptions/HttpStatusCode.js'
 //import repository
@@ -73,8 +73,11 @@ const signup = async (req,res) => {
         phoneNumber,
         role
     } = req.body 
-    if (errors.isEmpty()){
-        await UserRepository.signup({
+    if (!errors.isEmpty()){
+        return res.status(httpStatusCode.NOT_FOUND).json({errors: errors.array()})
+    } 
+    try {
+        const user = await UserRepository.signup({
             username,
             email,
             password,
@@ -82,10 +85,12 @@ const signup = async (req,res) => {
             role
         })
         res.status(httpStatusCode.OK).json({
-            message: 'New user was created successfully'
+            message: 'New user was created successfully',
+            data: user
         })
-    } else {
-        return res.status(httpStatusCode.NOT_FOUND).json({errors: errors.array()})
+    } catch (e) {
+        //debugger
+        res.status(httpStatusCode.NOT_FOUND).json({error: e.toString()})
     }
 }
 

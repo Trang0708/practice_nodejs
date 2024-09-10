@@ -1,5 +1,6 @@
 import mongoose, {Schema} from "mongoose"
-import { isEmail } from "validator"
+import validator from "validator"
+import isEmail from "validator/lib/isemail.js"
 export default mongoose.model('User',
     new Schema ({
         id: { type: Schema.Types.ObjectId },
@@ -7,8 +8,8 @@ export default mongoose.model('User',
             type: String,
             required: true,
             validate: {
-                validator: (value) => value.length > 5,
-                message: "Username must be longer than 3"
+                validator: (value) => value.toString().length >3 ,
+                message: "Username must be longer than 5"
             }
         },
         email: {

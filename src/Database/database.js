@@ -1,13 +1,14 @@
 import mongoose from "mongoose"
 import {print,OutputType} from "../Helpers/print.js"
 import Exception from '../Exceptions/exceptions.js'
+import * as dotenv from 'dotenv'
+dotenv.config()
 mongoose.set('strictQuery',true)
 
 async function connect () {
     try {
         let connection = await mongoose.connect(process.env.MONGO_URI)
         print('MongoDB was connected successfully', OutputType.SUCCESS)
-        console.log('MongoDB was connected successfully')
         return connection
     } catch (e) {
         const {code} = e

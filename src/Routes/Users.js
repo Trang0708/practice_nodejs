@@ -1,6 +1,6 @@
 /*IMPORT LIBRARY AND MIDDELWARE*/
 import express from 'express'
-import {body} from 'express-validator'
+import {body, validationResult} from 'express-validator'
 //Import user controller
 import { UserController } from '../Controllers/index.js'
 

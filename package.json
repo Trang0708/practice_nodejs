@@ -18,6 +18,7 @@
   "author": "trang0708",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-handlebars": "^8.0.1",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "chalk": "^5.3.0",
+    "debug": "^4.3.7",
     "node-sass": "^9.0.0",
     "nodemon": "^3.1.4"
   }
