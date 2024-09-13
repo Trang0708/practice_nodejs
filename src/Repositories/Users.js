@@ -1,9 +1,10 @@
 /*IMPORT LIBRARY AND MIDDELWARE*/
-import {body, validationResult} from 'express-validator'
 //import user model
 import {User} from '../Models/index.js'
-//import bcrypt to encrypt password for user
+//import bcrypt to encrypt/decrypt user's password
 import bcrypt from 'bcrypt'
+//import Java Web Token library
+import jwt from 'jsonwebtoken'
 //imort from helpers
 import { print, OutputType } from "../Helpers/print.js"
 //import exception
@@ -14,17 +15,32 @@ dotenv.config()
 
 //login
 const login = async ({email, password}) => {
-    try {
-        const existedUser = await  User.findOne({email}).exec()
-        const hashedPwd = await bcrypt.hash(password, process.env.BCRYPT_KEY)
-        //check if password of user
-        const isPwdMatched = bcrypt.compare(hashedPwd, existedUser.password)
-
-        if (isPwdMatched){
-            print('User login successfully', OutputType.SUCCESS)
+    const existedUser = await User.findOne({ email }).exec()
+    //check if password of user is matched
+    if (existedUser) {
+        let isPwdMatched = bcrypt.compare(password, existedUser.password)
+        if (isPwdMatched) {
+            //create Java Web Token
+            let JWTtoken = jwt.sign(
+                {
+                    data: existedUser
+                },
+                process.env.JWT_KEY,
+                {
+                    expiresIn: "7 days"
+                }
+            )
+            // clone existedUser and add more properties (not show password and add token property)
+            return {
+                ...existedUser.toObject(),
+                password: "not show due to security",
+                token: JWTtoken
+            }
+        } else {
+            throw new Exception(Exception.WRONG_EMAIL_OR_PASSWORD)
         }
-    } catch (e) {
-        
+    } else {
+        throw new Exception(Exception.WRONG_EMAIL_OR_PASSWORD)
     }
 }
 
@@ -41,7 +57,7 @@ const signup= async ({
         if (!!existedUser) {
             throw new Exception(Exception.USER_EXISTED)
         }
-        const hashedPwd = await bcrypt.hash(password, parseInt("practice make perfect"))
+        const hashedPwd = await bcrypt.hash(password, parseInt(process.env.BCRYPT_KEY))
         //insert new user to db
         //if key and value are the same, no need to use ':' between them
         const newUser = await User.create({

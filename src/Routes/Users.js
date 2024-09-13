@@ -9,7 +9,7 @@ const router = express.Router()
 //get all user
 router.get('/', UserController.getUser)
 
-//get user by id
+//get user's detail by id
 router.get('/:id',UserController.getUserByID)
 
 //login

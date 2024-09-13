@@ -39,7 +39,7 @@ const getUser = async (req,res) => {
     }
 }
 
-//get user by id
+//get user's detail by id
 const getUserByID = async (req,res) => {
     res.send ('Get user by id ' + req.params.id)
 }
@@ -51,11 +51,15 @@ const login = async (req,res) => {
     //distructuring body request
     const {email,password} = req.body
     if (errors.isEmpty()){
-        await UserRepository.login({email,password})
-        res.status(httpStatusCode.OK).json({
-            message: 'User ' + req.body.username + ' login successfully',
-            data: 'detail user here'
-        })
+        try {
+            let existedUser = await UserRepository.login({ email, password })
+            res.status(httpStatusCode.OK).json({
+                message: 'User with email ' + req.body.email + ' login successfully',
+                data: existedUser
+            })
+        } catch (e) {
+            res.status(httpStatusCode.NOT_FOUND).json({ message: e.toString() })
+        }
     } else {
         return res.status(httpStatusCode.NOT_FOUND).json({errors: errors.array()})
     }
@@ -90,7 +94,7 @@ const signup = async (req,res) => {
         })
     } catch (e) {
         //debugger
-        res.status(httpStatusCode.NOT_FOUND).json({error: e.toString()})
+        res.status(httpStatusCode.NOT_FOUND).json({message: e.toString()})
     }
 }
 

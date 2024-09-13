@@ -8,6 +8,7 @@ export default class Extension extends Error {
     //User handel error
     static USER_EXISTED = "Unable to sign up, this user already exists in data"
     static UNABLE_TO_SIGN_UP = "Unable to sign up new user"
+    static WRONG_EMAIL_OR_PASSWORD = "Login failed. Wrong email or password"
     
     constructor (message) {
         super(message)// extends message from Error parrent

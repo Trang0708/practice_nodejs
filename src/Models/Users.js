@@ -1,5 +1,4 @@
 import mongoose, {Schema} from "mongoose"
-import validator from "validator"
 import isEmail from "validator/lib/isemail.js"
 export default mongoose.model('User',
     new Schema ({
