@@ -7,6 +7,8 @@ import {
   ProductRouters,
   CategoryRouters
 } from './Routes/index.js'
+//import middleware for authentication
+import checkToken from './Middleware/auth.js'
 //enviroment config
 import * as dotenv from 'dotenv'
 dotenv.config()
@@ -26,6 +28,8 @@ app.engine('hbs',expHandelbars.engine({
 }))
 app.set('view engine', 'hbs')
 app.set('views', './src/resources/views');
+//Config app to use authentication
+app.use(checkToken) //has role like shield for every request
 //Config app to read json data
 app.use(express.json())
 
