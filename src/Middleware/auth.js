@@ -15,6 +15,7 @@ export default function checkToken (req, res, next) {
     //other request still need to check token before progess response
     //get token
     const token = req.headers?.authorization?.split(" ")[1]
+    
     try {
         const jwtObject = JWT.verify(token, process.env.JWT_KEY)
         //check if token get expired

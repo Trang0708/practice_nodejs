@@ -17,12 +17,20 @@ export default mongoose.model('Product',
             },
             required: false
         },
+        quantity: {
+            type: Number,
+            validate: {
+                validator: (value) => value > 0,
+                message: "Product quantity must be more than 0"
+            },
+            required: true
+        },
         mfg: {
             type: Date
         },
         category: {
             type: Schema.Types.ObjectId,
-            ref: 'Category',
+            ref: 'Categories',
             required: true
         }
     })
