@@ -52,9 +52,9 @@ const updateProduct = async (req,res) => {
 
 //insert new product 
 const insertProduct = async (req,res) => {
-    const {name, price, quantity, mfg, category} = req.body
+    const {name, price, quantity, mfg, categories} = req.body
     try {
-        const product = await ProductRepository.insertProduct({ name, price, quantity, mfg, category })
+        const product = await ProductRepository.insertProduct({ name, price, quantity, mfg, categories })
         res.status(httpStatusCode.OK).json({
             message: "New product was added",
             data: product

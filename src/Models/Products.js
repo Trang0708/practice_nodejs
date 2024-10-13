@@ -28,10 +28,10 @@ export default mongoose.model('Product',
         mfg: {
             type: Date
         },
-        category: {
+        categories: [{
             type: Schema.Types.ObjectId,
             ref: 'Categories',
             required: true
-        }
+        }]
     })
 )

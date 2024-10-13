@@ -18,12 +18,20 @@ const insertProduct = async ({
     price,
     quantity,
     mfg,
-    category
+    categories
 }) => {
-    const existedCategory = await Category.findOne({ name: category.toString().toUpperCase() }).exec()
-    if (!existedCategory) {
+    //uppercase all the category name to avoid typo request from client
+    const categoriesString = categories.map(category => category.toString().toUpperCase() )
+    //query all the category with name
+    const existedCategories = await Category.find().where('name').in(categoriesString).exec()
+    //check if any category is unexisted
+    if (existedCategories.length !== categories.length) {
         throw new Exception(Exception.UNEXISTED_CATEGORY)
     }
+    //get an array of id from categories
+    const categoryIDs = existedCategories.map(category => category._id)
+
+    //update the product if the product is already exist
     const existedProduct = await Product.findOne({name, mfg}).exec()
     if (!!existedProduct) {
         try {
@@ -38,11 +46,14 @@ const insertProduct = async ({
                     price,
                     //adding new product with same name and manufacture date will increase the quantity
                     $inc: { quantity },
-                    category: existedCategory._id
+                    categories: categoryIDs
                 },
                 {new: true}
             )
-            return updateProduct
+            return {
+                ...updateProduct.toObject(),
+                categories
+            } 
         } catch (e) {
             //check model validation
             if (!!e.errors){
@@ -56,10 +67,13 @@ const insertProduct = async ({
             price,
             quantity,
             mfg,
-            category: existedCategory._id
+            categories: categoryIDs
         })
         console.log('new product was added')
-        return product 
+        return {
+            ...product.toObject(),
+            categories
+        } 
     } catch (e) {
         //check model validation
         if (!!e.errors){
