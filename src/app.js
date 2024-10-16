@@ -53,6 +53,8 @@ function pageRender (page){
 
 
 app.listen(PORT, async() => {
+  //connect database
   await connect()
+  
   console.log(`Example app listening on port ${PORT}`)
 })

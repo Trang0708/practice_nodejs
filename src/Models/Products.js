@@ -30,7 +30,7 @@ export default mongoose.model('Product',
         },
         categories: [{
             type: Schema.Types.ObjectId,
-            ref: 'Categories',
+            ref: 'Category',
             required: true
         }]
     })

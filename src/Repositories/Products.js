@@ -50,10 +50,8 @@ const insertProduct = async ({
                 },
                 {new: true}
             )
-            return {
-                ...updateProduct.toObject(),
-                categories
-            } 
+            //return the product with all information of categories (including id, des and name)
+            return updateProduct.populate('categories')
         } catch (e) {
             //check model validation
             if (!!e.errors){
@@ -70,10 +68,8 @@ const insertProduct = async ({
             categories: categoryIDs
         })
         console.log('new product was added')
-        return {
-            ...product.toObject(),
-            categories
-        } 
+        //return the product with all information of categories (including id, des and name)
+        return product.populate('categories')
     } catch (e) {
         //check model validation
         if (!!e.errors){
