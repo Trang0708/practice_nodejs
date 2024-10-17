@@ -1,5 +1,6 @@
 /*IMPORT LIBRARY AND MIDDELWARE*/
 import express from 'express'
+import {body, validationResult} from 'express-validator'
 //Import product controller
 import { ProductController } from '../Controllers/index.js'
 
@@ -15,7 +16,10 @@ router.get('/:id', ProductController.getProductByID)
 router.patch('/',ProductController.updateProduct)
 
 //insert new product
-router.post('/insert',ProductController.insertProduct)
+router.post(
+    '/insert',
+    body('quantity').isFloat({min:1}),
+    ProductController.insertProduct)
 
 //delete product
 router.delete('/',ProductController.deleteProduct)

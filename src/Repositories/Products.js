@@ -10,7 +10,7 @@ const getProducts = async ({
     size,
     searchString
 }) => {
-    console.log('get all products with paging')
+    const filteredProducts = await new Product.aggregate()
 }
 
 const insertProduct = async ({
@@ -20,10 +20,10 @@ const insertProduct = async ({
     mfg,
     categories
 }) => {
-    //uppercase all the category name to avoid typo request from client
-    const categoriesString = categories.map(category => category.toString().toUpperCase() )
-    //query all the category with name
-    const existedCategories = await Category.find().where('name').in(categoriesString).exec()
+    const existedCategories = await findingCategories(categories)
+    if (existedCategories.length !== categories.length) {
+        throw new Exception(Exception.UNEXISTED_CATEGORY)
+    }
     //check if any category is unexisted
     if (existedCategories.length !== categories.length) {
         throw new Exception(Exception.UNEXISTED_CATEGORY)
@@ -32,32 +32,16 @@ const insertProduct = async ({
     const categoryIDs = existedCategories.map(category => category._id)
 
     //update the product if the product is already exist
-    const existedProduct = await Product.findOne({name, mfg}).exec()
+    const existedProduct = await Product.findOne({ name, mfg }).exec()
     if (!!existedProduct) {
-        try {
-            const updateProduct = await Product.findOneAndUpdate(
-                //filter
-                {
-                    name,
-                    mfg
-                },
-                //updating product 
-                {
-                    price,
-                    //adding new product with same name and manufacture date will increase the quantity
-                    $inc: { quantity },
-                    categories: categoryIDs
-                },
-                {new: true}
-            )
-            //return the product with all information of categories (including id, des and name)
-            return updateProduct.populate('categories')
-        } catch (e) {
-            //check model validation
-            if (!!e.errors){
-                throw new Exception('Input error', e.errors)
-            }
-        }
+        existedProduct.name = name ?? existedProduct.name
+        existedProduct.price = price ?? existedProduct.price
+        existedProduct.quantity = quantity ?? existedProduct.quantity
+        existedProduct.mfg = mfg ?? existedProduct.mfg
+        existedProduct.categories = existedCategories ?? existedProduct.categories
+        await existedProduct.save()
+        console.log('existed product was updated')
+        return existedProduct.populate('categories')
     }
     try {
         const product = await Product.create({
@@ -72,13 +56,50 @@ const insertProduct = async ({
         return product.populate('categories')
     } catch (e) {
         //check model validation
-        if (!!e.errors){
+        if (!!e.errors) {
             throw new Exception('Input error', e.errors)
         }
     }
 }
 
+const updateProduct = async ({
+    id,
+    name,
+    price,
+    quantity,
+    mfg,
+    categories
+}) => {
+    const existedCategories = await findingCategories(categories)
+    if (existedCategories.length !== categories.length) {
+        throw new Exception(Exception.UNEXISTED_CATEGORY)
+    }
+    const product = await Product.findById(id)
+    product.name = name ?? product.name
+    product.price = price ?? product.price
+    product.quantity = quantity ?? product.quantity
+    product.mfg = mfg ?? product.mfg
+    product.categories = existedCategories ?? product.categories
+    await product.save()
+    console.log('product was updated')
+    return product.populate('categories')
+}
+// functions
+async function findingCategories (categories) {
+    //uppercase the categories name to avoid typo
+    const categoriesUpperCase = categories.map(category => category.toString().toUpperCase())
+    //query all the category with name
+    const existedCategories = await Category.aggregate([
+        {
+            $match: {
+                name: { $in: categoriesUpperCase }
+            }
+        }
+    ])
+    return existedCategories
+}
 export default {
     getProducts,
-    insertProduct
+    insertProduct,
+    updateProduct
 }

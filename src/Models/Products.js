@@ -11,18 +11,12 @@ export default mongoose.model('Product',
         },
         price: {
             type: Number,
-            validate: {
-                validator: (value) => value > 1000,
-                message: "Product price must be bigger than 1000"
-            },
+            min: [1000, 'Price cannot be less than 1000 VND'],
             required: false
         },
         quantity: {
             type: Number,
-            validate: {
-                validator: (value) => value > 0,
-                message: "Product quantity must be more than 0"
-            },
+            min: [1, 'Quantity must be at least 1'],
             required: true
         },
         mfg: {
