@@ -43,6 +43,14 @@ const getProducts = async ({
     return filteredProducts
 }
 
+const getProductDetailById = async (productID) => {
+    const product = await Product.findById(productID)
+    if (!product){
+        throw new Exception(Exception.UNEXISTED_PRODUCT + " with id " + productID )
+    }
+    return product ?? {}
+}
+
 const insertProduct = async ({
     name,
     price,
@@ -51,12 +59,9 @@ const insertProduct = async ({
     categories
 }) => {
     const existedCategories = await findingCategories(categories)
-    if (existedCategories.length !== categories.length) {
-        throw new Exception(Exception.UNEXISTED_CATEGORY)
-    }
     //check if any category is unexisted
     if (existedCategories.length !== categories.length) {
-        throw new Exception(Exception.UNEXISTED_CATEGORY)
+        throw new Exception(Exception.UNEXISTED_CATEGORIES)
     }
     //get an array of id from categories
     const categoryIDs = existedCategories.map(category => category._id)
@@ -102,10 +107,13 @@ const updateProduct = async ({
 }) => {
     const existedCategories = await findingCategories(categories)
     if (existedCategories.length !== categories.length) {
-        throw new Exception(Exception.UNEXISTED_CATEGORY)
+        throw new Exception(Exception.UNEXISTED_CATEGORIES)
     }
     try {
         const product = await Product.findById(id)
+        if (!product){
+            throw new Exception(Exception.UNEXISTED_PRODUCT + " with id " + id )
+        }
         product.name = name ?? product.name
         product.price = price ?? product.price
         product.quantity = quantity ?? product.quantity
@@ -137,6 +145,7 @@ async function findingCategories(categories) {
 }
 export default {
     getProducts,
+    getProductDetailById,
     insertProduct,
     updateProduct
 }

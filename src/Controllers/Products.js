@@ -9,11 +9,10 @@ import Max_RECORDS from "../Global/Constants.js"
 
 //get all products
 const getProducts = async (req,res) => {
-    debugger
     let {page = 1, size = Max_RECORDS, searchString= ""} = req.query
     size = size >= Max_RECORDS ? Max_RECORDS : size
     try {
-        const filteredProducts = await ProductRepository.getProducts({size, page, searchString})
+        let filteredProducts = await ProductRepository.getProducts({size, page, searchString})
         res.status(httpStatusCode.OK).json({
             message: 'Successfully get all products',
             page: parseInt(page),
@@ -31,7 +30,19 @@ const getProducts = async (req,res) => {
 
 //get product by id
 const getProductByID = async (req,res) => {
-
+    let productID = req.params.id
+    try {
+        const product = await ProductRepository.getProductDetailById(productID)
+        res.status(httpStatusCode.OK).json({
+            message: "Get product detail successfully",
+            data: product
+        })
+    } catch (e) {
+        res.status(httpStatusCode.INTERNAL_SERVER_ERROR).json({
+            message: 'Unable to get products detail',
+            error: e.message
+        })
+    }
 }
 
 //update product

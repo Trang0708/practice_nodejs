@@ -11,8 +11,9 @@ export default class Exception extends Error {
     static WRONG_EMAIL_OR_PASSWORD = "Login failed. Wrong email or password"
 
     //Products handle error
-    static UNEXISTED_CATEGORY = "One or more product's category doesn't exist"
+    static UNEXISTED_CATEGORIES = "One or more product's category doesn't exist"
     static UNABLE_TO_ADD_PRODUCT = "Unable to add new product"
+    static UNEXISTED_PRODUCT = "Unable to find matched product"
     
     constructor (message, validationErrors = {}) {
         super(message)// extends message from Error parrent
