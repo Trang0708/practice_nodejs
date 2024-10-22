@@ -58,7 +58,7 @@ const login = async (req,res) => {
                 data: existedUser
             })
         } catch (e) {
-            res.status(httpStatusCode.NOT_FOUND).json({ message: e.toString() })
+            res.status(httpStatusCode.NOT_FOUND).json({ message: e.message })
         }
     } else {
         return res.status(httpStatusCode.NOT_FOUND).json({errors: errors.array()})
@@ -94,7 +94,7 @@ const signup = async (req,res) => {
         })
     } catch (e) {
         //debugger
-        res.status(httpStatusCode.NOT_FOUND).json({message: e.toString()})
+        res.status(httpStatusCode.NOT_FOUND).json({message: e.message})
     }
 }
 

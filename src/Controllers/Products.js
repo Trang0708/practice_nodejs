@@ -9,39 +9,22 @@ import Max_RECORDS from "../Global/Constants.js"
 
 //get all products
 const getProducts = async (req,res) => {
-    let {page = 1, size, searchString= ""} = req.query
+    debugger
+    let {page = 1, size = Max_RECORDS, searchString= ""} = req.query
     size = size >= Max_RECORDS ? Max_RECORDS : size
     try {
+        const filteredProducts = await ProductRepository.getProducts({size, page, searchString})
         res.status(httpStatusCode.OK).json({
             message: 'Successfully get all products',
-            data:
-            [
-                {
-                    name: 'GTX 1660S',
-                    price: '4000000 VND',
-                    quantity: 1,
-                    mfg: '28-08-2024',
-                    category: 'GPU'
-                },
-                {
-                    name: 'AMD 4650G',
-                    price: '2500000 VND',
-                    quantity: 9,
-                    mfg: '28-08-2024',
-                    category: 'CPU'
-                },
-                {
-                    name: 'XTP 8GB RAM DDR4',
-                    price: '800000 VND',
-                    quantity: 8,
-                    mfg: '28-08-2024',
-                    category: 'RAM'
-                }
-            ]
+            page: parseInt(page),
+            size: filteredProducts.length,
+            searchString,
+            data: filteredProducts
         })
-    } catch {
+    } catch (e){
         res.status(httpStatusCode.INTERNAL_SERVER_ERROR).json({
-            message: 'Unable to get products data'
+            message: 'Unable to get products data',
+            error: e.message
         })
     }
 }
@@ -61,7 +44,7 @@ const updateProduct = async (req,res) => {
             data: product
         })
     } catch (e) {
-        let errorMessage = e.toString()
+        let errorMessage = e.message
         if (Object.keys(e.validationErrors).length !== 0){
             errorMessage = e.validationErrors
         }
@@ -86,12 +69,12 @@ const insertProduct = async (req,res) => {
             data: product
         })
     } catch (e) {
-        let errorMessage = e.toString()
+        let errorMessage = e.message
         if (Object.keys(e.validationErrors).length !== 0){
             errorMessage = e.validationErrors
         }
         res.status(httpStatusCode.NOT_FOUND).json({ 
-            message: "Cannot update product",
+            message: "Cannot add product",
             error: errorMessage
          })
     }

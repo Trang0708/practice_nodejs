@@ -10,7 +10,37 @@ const getProducts = async ({
     size,
     searchString
 }) => {
-    const filteredProducts = await new Product.aggregate()
+    debugger
+    page = parseInt(page)
+    size = parseInt(size)
+    const searchNumber = Number(searchString);
+    let filteredProducts = await Product.aggregate([
+        {
+            $match: {
+                $or: [
+                    {
+                        name: { $regex: `.*${searchString}.*`, $options: 'i' }
+                    },
+                    // If the search string can be converted to a number, match against the price
+                    ...(isNaN(searchNumber) ? [] : [{ price: searchNumber }]),
+                    {
+                        categories: {
+                          $elemMatch: {
+                            name: { $regex: `.*${searchString}.*`, $options: 'i' }
+                          }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            $skip: (page-1)*size
+        },
+        {
+            $limit: size
+        }
+    ])
+    return filteredProducts
 }
 
 const insertProduct = async ({
@@ -36,7 +66,7 @@ const insertProduct = async ({
     if (!!existedProduct) {
         existedProduct.name = name ?? existedProduct.name
         existedProduct.price = price ?? existedProduct.price
-        existedProduct.quantity = quantity ?? existedProduct.quantity
+        existedProduct.quantity = (quantity ?? 0) + existedProduct.quantity
         existedProduct.mfg = mfg ?? existedProduct.mfg
         existedProduct.categories = existedCategories ?? existedProduct.categories
         await existedProduct.save()
@@ -74,18 +104,25 @@ const updateProduct = async ({
     if (existedCategories.length !== categories.length) {
         throw new Exception(Exception.UNEXISTED_CATEGORY)
     }
-    const product = await Product.findById(id)
-    product.name = name ?? product.name
-    product.price = price ?? product.price
-    product.quantity = quantity ?? product.quantity
-    product.mfg = mfg ?? product.mfg
-    product.categories = existedCategories ?? product.categories
-    await product.save()
-    console.log('product was updated')
-    return product.populate('categories')
+    try {
+        const product = await Product.findById(id)
+        product.name = name ?? product.name
+        product.price = price ?? product.price
+        product.quantity = quantity ?? product.quantity
+        product.mfg = mfg ?? product.mfg
+        product.categories = existedCategories ?? product.categories
+        await product.save()
+        console.log('product was updated')
+        return product.populate('categories')
+    } catch (e) {
+        //check model validation
+        if (!!e.errors) {
+            throw new Exception('Input error', e.errors)
+        }
+    }
 }
 // functions
-async function findingCategories (categories) {
+async function findingCategories(categories) {
     //uppercase the categories name to avoid typo
     const categoriesUpperCase = categories.map(category => category.toString().toUpperCase())
     //query all the category with name

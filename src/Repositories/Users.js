@@ -18,7 +18,7 @@ const login = async ({email, password}) => {
     const existedUser = await User.findOne({ email }).exec()
     //check if password of user is matched
     if (existedUser) {
-        let isPwdMatched = bcrypt.compare(password, existedUser.password)
+        let isPwdMatched = await bcrypt.compare(password, existedUser.password)
         if (isPwdMatched) {
             //create Java Web Token
             let JWTtoken = jwt.sign(
